@@ -1,7 +1,6 @@
 // Dependencies
 // =============================================================
 var express = require("express");
-var path = require("path");
 
 // Sets up the Express App
 // =============================================================
@@ -12,14 +11,12 @@ var PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "Develop/public/index.html"));
-  });
 
-app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "Develop/public/notes.html"));
-  });
+require("./Develop/routes/htmlRoutes")(app);
+require("./Develop/routes/apiRouts")(app);
 
+
+app.use(express.static(__dirname + '/Develop/public'));
 
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
