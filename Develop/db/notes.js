@@ -1,48 +1,60 @@
 const fs = require("fs");
 const util = require("util");
-const db = require("./db.json")
+const { Console } = require("console");
+// const db = require("./db.json")
 
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 
 class SaveNote {
   readFile() {
-    return readFileAsync("db/db.json", "utf8");
+    return readFileAsync("Develop/db/db.json", "utf8");
   }
 
   writeFile(note) {
-    return writeFileAsync("db/db.json", JSON.stringify(note));
+    return writeFileAsync("Develop/db/db.json", JSON.stringify(note));
   }
 
   getNote() {
-    return this.readFile().then((res) => {
+    return this.readFile().then((res,err) => {
+        if(err) throw err;
+        
       return JSON.parse(res);
     });
   }
 
   addNotes(note) {
+    console.log("line 27" + note)
+
     const newNote = {
       id: Math.random(),
-      title: note.body.title,
-      text: note.body.text,
+      title: note.title,
+      text: note.text,
     };
+    console.log(newNote)
     return this.getNote()
       .then((res) => {
-        [...res, newNote];
+        let newNoteArr = [...res , newNote]
+        console.log(newNoteArr)
+        return newNoteArr
       })
       .then((updatedNotes) => {
+        console.log(updatedNotes)
         this.writeFile(updatedNotes);
       })
       .then(() => {
-        newNote;
+        return newNote;
       });
   }
 
   removeNote(id){
-    return this.getNotes().then((res)=>{
-       res.filter(note => note.id !== id)
+    return this.getNote().then((res)=>{
+      let filteredNotes = res.filter(note => note.id !== parseFloat(id))
+      return filteredNotes
     }).then((filteredNotes) => {
-        this.writeFile(filteredNotes)
+      console.log(filteredNotes)
+      this.writeFile(filteredNotes)
+      return filteredNotes
     })
   }
 }

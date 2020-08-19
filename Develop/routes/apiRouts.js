@@ -15,12 +15,9 @@ module.exports = function (app) {
       });
   });
 
-  // API POST Request
+  // API POST Request - To send the new note and the receive it back after the req was process
   app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-
-    console.log(newNote);
-
     SaveNote.addNotes(newNote)
       .then((notes) => {
         res.json(notes);
